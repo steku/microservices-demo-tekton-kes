@@ -1,0 +1,39 @@
+# Default values for ms-demo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+certificate:
+  issuer: "letsencrypt-prod-istio"
+  kind: "ClusterIssuer"
+  namespace: "istio-system"
+  commonName: "tekton.your-domain.tld"
+  dnsNames:
+  - "tekton.your-domain.tld"
+
+istio:
+  port: 443
+  istioSelector: "ingressgateway"
+
+registry:
+  url: "your-registry.your-domain.tld"
+  registryVaultSecret: "kes/data/ms-demo/registry"
+  usernameProperty: "username"
+  passwordProperty: "password"
+
+tekton:
+  deployNamespace: demo
+  gitRevision: master
+
+github:
+  githubVaultSecret: "kes/data/ms-demo/github"
+  privateKeyProperty: "privateKey"
+  knownHosts: "Z2l0aHViLmNvbSBzc2gtcnNhIEFBQUFCM056YUMxeWMyRUFBQUFCSXdBQUFRRUFxMkE3aFJHbWRubTl0VURiTzlJRFN3Qks2VGJRYStQWFlQQ1B5NnJiVHJUdHc3UEhrY2NLcnBwMHlWaHA1SGRFSWNLcjZwTGxWREJmT0xYOVFVc3lDT1Ywd3pmaklKTmxHRVlzZGxMSml6SGhibjJtVWp2U0FIUXFaRVRZUDgxZUZ6TFFOblBIdDRFVlZVaDdWZkRFU1U4NEtlem1ENVFsV3BYTG12VTMxL3lNZitTZTh4aEhUdktTQ1pJRkltV3dvRzZtYlVvV2Y5bnpwSW9hU2pCK3dlcXFVVW1wYWFhc1hWYWw3MkorVVgyQisyUlBXM1JjVDBlT3pRZ3FsSkwzUktyVEp2ZHNqRTNKRUF2R3EzbEdIU1pYeTI4RzNza3VhMlNtVmkvdzR5Q0U2Z2JPRHFuVFdsZzcrd0M2MDR5ZEdYQThWSmlTNWFwNDNKWGlVRkZBYVE9PQo="
+  tokenProperty: "token"
+  secretProperty: "secret"
+
+argocd:
+  argocdVaultSecret: "kes/data/ms-demo/argocd"
+  usernameProperty: "username"
+  passwordProperty: "password"
+  appname: "ms-demo"
+  url: argocd.your-registry.your-domain.tld

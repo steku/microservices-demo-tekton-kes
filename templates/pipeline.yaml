@@ -1,0 +1,333 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+spec:
+  resources:
+    - name: source-repo
+      type: git
+    - name: adService-image
+      type: image
+    - name: cartService-image
+      type: image
+    - name: currencyService-image
+      type: image
+    - name: checkoutService-image
+      type: image
+    - name: emailService-image
+      type: image
+    - name: frontendService-image
+      type: image
+    - name: loadGenerator-image
+      type: image
+    - name: paymentService-image
+      type: image
+    - name: productCatalogService-image
+      type: image
+    - name: recommendationService-image
+      type: image
+    - name: shippingService-image
+      type: image
+  params:
+    - name: adServiceDockerfile
+      type: string
+    - name: adServiceContext
+      type: string
+    - name: adServiceUseCache
+      type: string
+      default: "true"
+    - name: cartServiceDockerfile
+      type: string
+    - name: cartServiceContext
+      type: string
+    - name: cartServiceUseCache
+      type: string
+      default: "false"
+    - name: currencyServiceDockerfile
+      type: string
+    - name: currencyServiceContext
+      type: string
+    - name: currencyServiceUseCache
+      type: string
+      default: "true"
+    - name: checkoutServiceDockerfile
+      type: string
+    - name: checkoutServiceContext
+      type: string
+    - name: checkoutServiceUseCache
+      type: string
+      default: "true"
+    - name: emailServiceDockerfile
+      type: string
+    - name: emailServiceContext
+      type: string
+    - name: emailServiceUseCache
+      type: string
+      default: "true"
+    - name: frontendServiceDockerfile
+      type: string
+    - name: frontendServiceContext
+      type: string
+    - name: frontendServiceUseCache
+      type: string
+      default: "true"
+    - name: loadGeneratorDockerfile
+      type: string
+    - name: loadGeneratorContext
+      type: string
+    - name: loadGeneratorUseCache
+      type: string
+      default: "true"
+    - name: paymentServiceDockerfile
+      type: string
+    - name: paymentServiceContext
+      type: string
+    - name: paymentServiceUseCache
+      type: string
+      default: "true"
+    - name: productCatalogServiceDockerfile
+      type: string
+    - name: productCatalogServiceContext
+      type: string
+    - name: productCatalogUseCache
+      type: string
+      default: "true"
+    - name: recommendationServiceDockerfile
+      type: string
+    - name: recommendationServiceContext
+      type: string
+    - name: recommendationServiceUseCache
+      type: string
+      default: "true"
+    - name: shippingServiceDockerfile
+      type: string
+    - name: shippingServiceContext
+      type: string
+    - name: shippingServiceUseCache
+      type: string
+      default: "true"
+    - name: argoCdUrl
+      type: string
+    - name: ArgoCdSecret
+      type: string
+    - name: commitId
+      type: string
+    - name: appName
+      type: string
+  tasks:
+  - name: build-adservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.adServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.adServiceContext)
+      - name: CACHE
+        value: $(params.adServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: adService-image
+  - name: build-cartservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.cartServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.cartServiceContext)
+      - name: CACHE
+        value: $(params.cartServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: cartService-image
+  - name: build-checkoutservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.checkoutServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.checkoutServiceContext)
+      - name: CACHE
+        value: $(params.checkoutServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: checkoutService-image
+  - name: build-currencyservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.currencyServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.currencyServiceContext)
+      - name: CACHE
+        value: $(params.currencyServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: currencyService-image
+  - name: build-emailservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.emailServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.emailServiceContext)
+      - name: CACHE
+        value: $(params.emailServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: emailService-image
+  - name: build-frontendservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.frontendServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.frontendServiceContext)
+      - name: CACHE
+        value: $(params.frontendServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: frontendService-image
+  - name: build-loadgenerator
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.loadGeneratorDockerfile)
+      - name: CONTEXT
+        value: $(params.loadGeneratorContext)
+      - name: CACHE
+        value: $(params.loadGeneratorUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: loadGenerator-image
+  - name: build-paymentservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.paymentServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.paymentServiceContext)
+      - name: CACHE
+        value: $(params.paymentServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: paymentService-image
+  - name: build-productcatalogservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.productCatalogServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.productCatalogServiceContext)
+      - name: CACHE
+        value: $(params.productCatalogUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: productCatalogService-image
+  - name: build-recommendationservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.recommendationServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.recommendationServiceContext)
+      - name: CACHE
+        value: $(params.recommendationServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: recommendationService-image
+  - name: build-shippingservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-kaniko
+    params:
+      - name: DOCKERFILE
+        value: $(params.shippingServiceDockerfile)
+      - name: CONTEXT
+        value: $(params.shippingServiceContext)
+      - name: CACHE
+        value: $(params.shippingServiceUseCache)
+    resources:
+      inputs:
+        - name: source
+          resource: source-repo
+      outputs:
+        - name: image
+          resource: shippingService-image
+  - name: update-commit
+    runAfter:
+    - build-adservice
+    - build-cartservice
+    - build-checkoutservice
+    - build-currencyservice
+    - build-emailservice
+    - build-frontendservice
+    - build-loadgenerator
+    - build-paymentservice
+    - build-productcatalogservice
+    - build-recommendationservice
+    - build-shippingservice
+    taskRef:
+      name: {{ include "ms-demo-tekton.fullname" . }}-update-commit-id
+    params:
+      - name: ArgoURL
+        value: $(params.argoCdUrl)
+      - name: ArgoCdSecret
+        value: $(params.ArgoCdSecret)
+      - name: CommitID
+        value: $(params.commitId)
+      - name: AppName
+        value: $(params.appName)
+    timeout: 20m0s
+

@@ -1,0 +1,14 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+spec:
+  serviceAccountName: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+  triggers:
+    - bindings:
+      - name: {{ include "ms-demo-tekton.fullname" . }}
+      template:
+        name: {{ include "ms-demo-tekton.fullname" . }}

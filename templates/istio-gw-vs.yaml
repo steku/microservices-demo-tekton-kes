@@ -1,0 +1,39 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+
+spec:
+  selector:
+    istio: {{ .Values.istio.istioSelector }}
+  servers:
+  - port:
+      number: {{ .Values.istio.port }}
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: "{{ include "ms-demo-tekton.fullname" . }}-cert"
+    hosts:
+      {{- toYaml .Values.certificate.dnsNames | nindent 4 }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- toYaml .Values.certificate.dnsNames | nindent 4 }} 
+  gateways:
+  - {{ include "ms-demo-tekton.fullname" . }}
+  http:
+  - route:
+    - destination:
+        host: el-{{ include "ms-demo-tekton.fullname" . }}
+        port:
+          number: 8080

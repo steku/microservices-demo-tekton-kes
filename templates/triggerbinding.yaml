@@ -1,0 +1,25 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+ name: {{ include "ms-demo-tekton.fullname" . }}
+ labels:
+   {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+spec:
+  params:
+    - name: gitrevision
+      value: $(body.head_commit.id)
+    - name: namespace
+      value: {{ .Values.tekton.deployNamespace }}
+    - name: gitrepositoryurl
+      value: "git@github.com:$(body.repository.full_name)"
+    - name: registry
+      value: {{ .Values.registry.url }}
+    - name: argoCdUrl
+      value: {{ .Values.argocd.url }}
+    - name: ArgoCdSecret
+      value: {{ include "ms-demo-tekton.fullname" . }}-argocd-secret
+    - name: appName
+      value: {{ .Values.argocd.appname }} 
+---
+

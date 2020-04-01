@@ -1,0 +1,162 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+    - name: gitrepositoryurl
+      description: The git repository url
+    - name: namespace
+      description: The namespace to create the resources
+    - name: registry
+      description: The URL/folder of the repoitory to upload the image to
+    - name: argoCdUrl
+      description: Argo CD server to update the tag
+    - name: ArgoCdSecret
+      description: Secret that holds the credentials for Argo CD
+    - name: appName
+      description: Name of the application to update in Argo CD
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: {{ include "ms-demo-tekton.fullname" . }}-$(uid)
+        namespace: $(params.namespace)
+      spec:
+        serviceAccountName: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+        pipelineRef:
+          name: {{ include "ms-demo-tekton.fullname" . }}
+        resources:
+          - name: source-repo
+            resourceSpec:
+              type: git
+              params:
+              - name: revision
+                value: $(params.gitrevision)
+              - name: url
+                value: $(params.gitrepositoryurl)
+          - name: adService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/adservice:$(params.gitrevision)
+          - name: cartService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/cartservice:$(params.gitrevision)
+          - name: checkoutService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/checkoutservice:$(params.gitrevision)
+          - name: currencyService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/currencyservice:$(params.gitrevision)
+          - name: emailService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/emailservice:$(params.gitrevision)
+          - name: frontendService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/frontend:$(params.gitrevision)
+          - name: loadGenerator-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/loadgenerator:$(params.gitrevision)
+          - name: paymentService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/paymentservice:$(params.gitrevision)
+          - name: productCatalogService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/productcatalogservice:$(params.gitrevision)
+          - name: recommendationService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/recommendationservice:$(params.gitrevision)
+          - name: shippingService-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: $(params.registry)/shippingservice:$(params.gitrevision)
+        params:
+          - name: adServiceDockerfile
+            value: ./src/adservice/Dockerfile
+          - name: adServiceContext
+            value: ./src/adservice
+          - name: cartServiceDockerfile
+            value: ./src/cartservice/Dockerfile
+          - name: cartServiceContext
+            value: ./src/cartservice
+          - name: checkoutServiceDockerfile
+            value: ./src/checkoutservice/Dockerfile
+          - name: checkoutServiceContext
+            value: ./src/checkoutservice
+          - name: currencyServiceDockerfile
+            value: ./src/currencyservice/Dockerfile
+          - name: currencyServiceContext
+            value: ./src/currencyservice
+          - name: emailServiceDockerfile
+            value: ./src/emailservice/Dockerfile
+          - name: emailServiceContext
+            value: ./src/emailservice
+          - name: frontendServiceDockerfile
+            value: ./src/frontend/Dockerfile
+          - name: frontendServiceContext
+            value: ./src/frontend
+          - name: loadGeneratorDockerfile
+            value: ./src/loadgenerator/Dockerfile
+          - name: loadGeneratorContext
+            value: ./src/loadgenerator
+          - name: paymentServiceDockerfile
+            value: ./src/paymentservice/Dockerfile
+          - name: paymentServiceContext
+            value: ./src/paymentservice
+          - name: productCatalogServiceDockerfile
+            value: ./src/productcatalogservice/Dockerfile
+          - name: productCatalogServiceContext
+            value: ./src/productcatalogservice
+          - name: recommendationServiceDockerfile
+            value: ./src/recommendationservice/Dockerfile
+          - name: recommendationServiceContext
+            value: ./src/recommendationservice
+          - name: shippingServiceDockerfile
+            value: ./src/shippingservice/Dockerfile
+          - name: shippingServiceContext
+            value: ./src/shippingservice
+          - name: argoCdUrl
+            value: $(params.argoCdUrl)
+          - name: ArgoCdSecret
+            value: $(params.ArgoCdSecret)
+          - name: commitId
+            value: $(params.gitrevision)
+          - name: appName
+            value: $(params.appName)
+---
+

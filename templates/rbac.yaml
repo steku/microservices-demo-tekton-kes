@@ -1,0 +1,115 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - tekton.dev
+  resources:
+  - eventlisteners
+  - triggerbindings
+  - triggertemplates
+  - pipelineresources
+  verbs:
+  - get
+- apiGroups:
+  - tekton.dev
+  resources:
+  - pipelineruns
+  - pipelineresources
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+secrets:
+  - name: {{ include "ms-demo-tekton.fullname" . }}-github-ssh-key
+  - name: {{ include "ms-demo-tekton.fullname" . }}-docker-creds
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-admin
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-createwebhook
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+- apiGroups:
+  - tekton.dev
+  resources:
+  - eventlisteners
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - create
+  - get
+  - list
+  - delete
+  - update
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-createwebhook
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-createwebhook
+  labels:
+    {{- include "ms-demo-tekton.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-createwebhook
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "ms-demo-tekton.fullname" . }}-tekton-triggers-createwebhook
