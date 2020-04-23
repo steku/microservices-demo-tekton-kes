@@ -8,6 +8,7 @@ metadata:
 rules:
 - apiGroups:
   - tekton.dev
+  - triggers.tekton.dev
   resources:
   - eventlisteners
   - triggerbindings
@@ -17,6 +18,7 @@ rules:
   - get
 - apiGroups:
   - tekton.dev
+  - triggers.tekton.dev
   resources:
   - pipelineruns
   - pipelineresources
@@ -74,6 +76,7 @@ rules:
   - delete
 - apiGroups:
   - tekton.dev
+  - triggers.tekton.dev
   resources:
   - eventlisteners
   verbs:
